@@ -1,1 +1,1 @@
-# i18n.es
+# @i-xi-dev/i18n
