@@ -36,6 +36,9 @@ Deno.test("Script.propertiesOf()", () => {
   assertStrictEquals(l?.pva, "Latin");
   assertStrictEquals(l?.private, false);
 
+  // const l2 = Script.propertiesOf("Latn", "ja");
+  // assertStrictEquals(l2?.name, "ラテン文字"); 環境依存
+
   const s = Script.propertiesOf("Zsym");
   assertStrictEquals(s?.alpha4, "Zsym");
   assertStrictEquals(s?.number, 996);

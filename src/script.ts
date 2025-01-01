@@ -1,5 +1,6 @@
 import scriptMap from "../dat/script_map.json" with { type: "json" };
 import { script } from "./_.ts";
+import { getScriptName } from "./utils.ts";
 
 type _script = keyof typeof scriptMap;
 
@@ -22,7 +23,7 @@ export type Properties = {
   /** ISO 15924 Numeric code. */
   number: number;
 
-  /** ISO 15924 English name. */
+  /** Name. */
   name: string;
 
   /** UCD alias. */
@@ -33,15 +34,19 @@ export type Properties = {
 };
 //XXX dir,type,...
 
-export function propertiesOf(script: script): Properties | null {
+export function propertiesOf(
+  script: script,
+  nameLocale?: Intl.UnicodeBCP47LocaleIdentifier | Intl.Locale,
+): Properties | null {
   if (is(script)) {
     const info = scriptMap[script as _script];
+
     return {
       alpha4: script,
       number: info[0] as number,
-      name: info[1] as string,
-      pva: info[2] as string,
-      private: info[3] as boolean,
+      name: getScriptName(script, nameLocale),
+      pva: info[1] as string,
+      private: info[2] as boolean,
     };
   }
 
