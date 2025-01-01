@@ -1,0 +1,20 @@
+{
+  "@context": {
+    "prov": "http://www.w3.org/ns/prov#"
+  },
+  "@id": "https://raw.githubusercontent.com/i-xi-dev/i18n.es/refs/heads/main/dat/meta.jsonld",
+  "@graph": [
+    {
+      "@id": "https://raw.githubusercontent.com/i-xi-dev/i18n.es/refs/heads/main/dat/language_map.json",
+      "prov:generatedAt": "2024-12-31T16:36:00Z"
+    },
+    {
+      "@id": "https://raw.githubusercontent.com/i-xi-dev/i18n.es/refs/heads/main/dat/region_map.json",
+      "prov:generatedAt": "2024-12-26T12:41:00Z"
+    },
+    {
+      "@id": "https://raw.githubusercontent.com/i-xi-dev/i18n.es/refs/heads/main/dat/script_map.json",
+      "prov:generatedAt": "2024-12-26T12:28:00Z"
+    }
+  ]
+}
