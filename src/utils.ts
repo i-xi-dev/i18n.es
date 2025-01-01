@@ -1,6 +1,4 @@
-import { script } from "./_.ts";
-
-let _scriptNameDictionary: Intl.DisplayNames | null = null;
+import { region, script } from "./_.ts";
 
 //TODO import
 function isString(test: unknown): test is string {
@@ -9,6 +7,8 @@ function isString(test: unknown): test is string {
 
 //TODO import
 const EMPTY_STRING = "";
+
+let _scriptNameDictionary: Intl.DisplayNames | null = null;
 
 export function getScriptName(
   script: script,
@@ -27,4 +27,25 @@ export function getScriptName(
   }
 
   return _scriptNameDictionary?.of(script) ?? EMPTY_STRING;
+}
+
+let _regionNameDictionary: Intl.DisplayNames | null = null;
+
+export function getRegionName(
+  region: region,
+  nameLocale: Intl.UnicodeBCP47LocaleIdentifier | Intl.Locale = "en",
+): string {
+  const reuse = _regionNameDictionary &&
+    _regionNameDictionary.resolvedOptions().locale !==
+      (isString(nameLocale) ? nameLocale : nameLocale.baseName);
+
+  if (reuse !== true) {
+    _regionNameDictionary = new Intl.DisplayNames(nameLocale, {
+      fallback: "none",
+      //XXX style,
+      type: "region",
+    });
+  }
+
+  return _regionNameDictionary?.of(region) ?? EMPTY_STRING;
 }

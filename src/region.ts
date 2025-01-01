@@ -1,5 +1,6 @@
 import regionMap from "../dat/region_map.json" with { type: "json" };
 import { region } from "./_.ts";
+import { getRegionName } from "./utils.ts";
 
 type _region = keyof typeof regionMap;
 
@@ -25,7 +26,7 @@ export type Properties = {
   /** ISO 3166-1 Alpha-3 code. */
   alpha3: string;
 
-  /** ISO 3166-1 English name. */
+  /** Name. */
   name: string;
 
   /** User-assigned code */
@@ -33,16 +34,20 @@ export type Properties = {
 };
 //XXX Administrative languages / Local name
 
-export function propertiesOf(region: region): Properties | null {
+export function propertiesOf(
+  region: region,
+  nameLocale?: Intl.UnicodeBCP47LocaleIdentifier | Intl.Locale,
+): Properties | null {
   if (is(region)) {
     const info = regionMap[region as _region];
     const num = info[0] as number;
+
     return {
       alpha2: region,
       number: (num <= 0) ? Number.NaN : num,
       alpha3: info[1] as string,
-      name: info[2] as string,
-      private: info[3] as boolean,
+      name: getRegionName(region, nameLocale),
+      private: info[2] as boolean,
     };
   }
 
