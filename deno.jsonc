@@ -1,6 +1,6 @@
 {
   "imports": {
-    "@i-xi-dev/types": "https://raw.githubusercontent.com/i-xi-dev/type.es/4.0.0/mod.ts",
+    "@i-xi-dev/type": "https://raw.githubusercontent.com/i-xi-dev/type.es/4.0.0/mod.ts",
     "@std/assert": "jsr:@std/assert@1.0.10"
   },
   "name": "@i-xi-dev/i18n",

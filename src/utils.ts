@@ -1,5 +1,5 @@
 import { language, region, script } from "./_.ts";
-import { Basics } from "@i-xi-dev/types";
+import { Basics } from "@i-xi-dev/type";
 
 const { EMPTY: EMPTY_STRING, is: isString } = Basics.StringType;
 

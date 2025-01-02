@@ -8,3 +8,5 @@ export type script = string;
 export type region = string;
 
 export type rune = string;
+
+export type usvstring = string;

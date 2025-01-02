@@ -129,7 +129,7 @@ export namespace Language {
       const scopeCode = info[3] as string;
       const typeCode = info[4] as string;
 
-      return {
+      return Object.freeze({
         alpha2: info[0] as string,
         alpha3,
         alpha3b: (alpha3b.length > 0) ? alpha3b : alpha3,
@@ -137,7 +137,7 @@ export namespace Language {
         private: (scopeCode === "p"),
         scope: _scope(scopeCode),
         type: _type(typeCode),
-      };
+      });
     }
 
     return null;

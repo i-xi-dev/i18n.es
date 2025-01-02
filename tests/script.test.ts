@@ -103,3 +103,72 @@ Deno.test("Script/includes()", () => {
     "`Zsym` is not supported in Unicode property.",
   );
 });
+
+Deno.test("Script.includesAll()", () => {
+  const k = Script.of("Kana");
+  const h = Script.of("Hira");
+  const l = Script.of("Latn");
+  //const lc = Script.of(["Latn", "Zyyy"]);
+  const lc = Script.of("Zyyy");
+
+  const opEx = { excludeScx: true } as const;
+
+  assertStrictEquals(k?.includesAll("ア"), true);
+  assertStrictEquals(h?.includesAll("ア"), false);
+  assertStrictEquals(k?.includesAll("ア", opEx), true);
+  assertStrictEquals(h?.includesAll("ア", opEx), false);
+
+  assertStrictEquals(k?.includesAll("あ"), false);
+  assertStrictEquals(h?.includesAll("あ"), true);
+  assertStrictEquals(k?.includesAll("あ", opEx), false);
+  assertStrictEquals(h?.includesAll("あ", opEx), true);
+
+  assertStrictEquals(k?.includesAll("ー"), true);
+  assertStrictEquals(h?.includesAll("ー"), true);
+  assertStrictEquals(k?.includesAll("ー", opEx), false);
+  assertStrictEquals(h?.includesAll("ー", opEx), false);
+
+  assertStrictEquals(k?.includesAll("か\u3099"), false);
+  assertStrictEquals(h?.includesAll("か\u3099"), true);
+  assertStrictEquals(k?.includesAll("か\u3099", opEx), false);
+  assertStrictEquals(h?.includesAll("か\u3099", opEx), false);
+
+  assertStrictEquals(k?.includesAll("カ\u3099"), true);
+  assertStrictEquals(h?.includesAll("カ\u3099"), false);
+  assertStrictEquals(k?.includesAll("カ\u3099", opEx), false);
+  assertStrictEquals(h?.includesAll("カ\u3099", opEx), false);
+
+  assertStrictEquals(l?.includesAll(""), true);
+  assertStrictEquals(l?.includesAll("a"), true);
+  assertStrictEquals(l?.includesAll("aa"), true);
+  assertStrictEquals(l?.includesAll("1aa"), false);
+  assertStrictEquals(l?.includesAll("a1a"), false);
+  assertStrictEquals(l?.includesAll("aa1"), false);
+  assertStrictEquals(l?.includesAll("aaa"), true);
+
+  assertStrictEquals(l?.includesAll("", opEx), true);
+  assertStrictEquals(l?.includesAll("a", opEx), true);
+  assertStrictEquals(l?.includesAll("aa", opEx), true);
+  assertStrictEquals(l?.includesAll("1aa", opEx), false);
+  assertStrictEquals(l?.includesAll("a1a", opEx), false);
+  assertStrictEquals(l?.includesAll("aa1", opEx), false);
+  assertStrictEquals(l?.includesAll("aaa", opEx), true);
+
+  assertStrictEquals(lc?.includesAll("", opEx), true);
+  assertStrictEquals(lc?.includesAll("a", opEx), false);
+  assertStrictEquals(lc?.includesAll("aa", opEx), false);
+  assertStrictEquals(lc?.includesAll("1aa", opEx), false);
+  assertStrictEquals(lc?.includesAll("a1a", opEx), false);
+  assertStrictEquals(lc?.includesAll("aa1", opEx), false);
+  assertStrictEquals(lc?.includesAll("aaa", opEx), false);
+
+  assertStrictEquals(l?.includesAll(null as unknown as "0"), false);
+
+  assertThrows(
+    () => {
+      Script.of("Zsym")?.includesAll("a");
+    },
+    RangeError,
+    "`Zsym` is not supported in Unicode property.",
+  );
+});

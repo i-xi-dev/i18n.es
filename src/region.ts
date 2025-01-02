@@ -43,13 +43,13 @@ export namespace Region {
       const info = regionMap[region as _region];
       const num = info[0] as number;
 
-      return {
+      return Object.freeze({
         alpha2: region,
         number: (num <= 0) ? Number.NaN : num,
         alpha3: info[1] as string,
         name: getRegionName(region, nameLocale),
         private: info[2] as boolean,
-      };
+      });
     }
 
     return null;

@@ -1,9 +1,10 @@
 import scriptMap from "../dat/script_map.json" with { type: "json" };
 import { getScriptName } from "./utils.ts";
-import { rune, script } from "./_.ts";
-import { Text } from "@i-xi-dev/types";
+import { rune, script, usvstring } from "./_.ts";
+import { Text } from "@i-xi-dev/type";
 
 const { is: isRune } = Text.Rune;
+const { is: isRuneSequence } = Text.RuneSequence;
 
 type _script = keyof typeof scriptMap;
 
@@ -23,9 +24,25 @@ export interface Script {
   /** Reserved for private use */
   private: boolean;
 
-  includes(rune: rune, options?: Script.IncludesOptions): boolean;
+  includes(rune: rune, options?: Script.IncludesOptions): rune is rune;
+  includesAll(
+    runeSequence: usvstring,
+    options?: Script.IncludesOptions,
+  ): runeSequence is usvstring;
 }
 //XXX dir,type,...
+
+function _scriptToPattern(
+  script: script,
+  options?: Script.IncludesOptions,
+): string {
+  const or = [];
+  or.push(`\\p{sc=${script}}`);
+  if (options?.excludeScx !== true) {
+    or.push(`\\p{scx=${script}}`);
+  }
+  return or.join("|");
+}
 
 function _includesRune(
   rune: rune,
@@ -36,15 +53,28 @@ function _includesRune(
     return false;
   }
 
-  const or = [];
-  or.push(`\\p{sc=${script}}`);
-  if (options?.excludeScx !== true) {
-    or.push(`\\p{scx=${script}}`);
-  }
-  const pattern = or.join("|");
+  const pattern = _scriptToPattern(script, options);
 
   try {
     return (new RegExp(`^(?:${pattern})$`, "v")).test(rune);
+  } catch {
+    throw new RangeError(`\`${script}\` is not supported in Unicode property.`);
+  }
+}
+
+function _includesRuneSequence(
+  runeSequence: usvstring,
+  script: script,
+  options?: Script.IncludesOptions,
+): boolean {
+  if (isRuneSequence(runeSequence) !== true) {
+    return false;
+  }
+
+  const pattern = _scriptToPattern(script, options);
+
+  try {
+    return (new RegExp(`^(?:${pattern})*$`, "v")).test(runeSequence);
   } catch {
     throw new RangeError(`\`${script}\` is not supported in Unicode property.`);
   }
@@ -74,15 +104,20 @@ export namespace Script {
     if (is(script)) {
       const info = scriptMap[script as _script];
 
-      return {
+      return Object.freeze({
         alpha4: script,
         number: info[0] as number,
         name: getScriptName(script, nameLocale),
         pva: info[1] as string,
         private: info[2] as boolean,
-        includes: (rune: rune, options?: IncludesOptions): boolean =>
+        includes: (rune: rune, options?: IncludesOptions): rune is rune =>
           _includesRune(rune, script, options),
-      };
+        includesAll: (
+          runeSequence: usvstring,
+          options?: Script.IncludesOptions,
+        ): runeSequence is usvstring =>
+          _includesRuneSequence(runeSequence, script, options),
+      });
     }
 
     return null;
