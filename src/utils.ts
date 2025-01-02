@@ -14,7 +14,7 @@ export function getLanguageName(
 ): string {
   let languageNames = _languageNamesRef?.deref();
   const reuse = languageNames &&
-    languageNames.resolvedOptions().locale !==
+    languageNames.resolvedOptions().locale ===
       (isString(nameLocale) ? nameLocale : nameLocale.baseName);
 
   if (reuse !== true) {
@@ -27,7 +27,7 @@ export function getLanguageName(
     _languageNamesRef = new WeakRef(languageNames);
   }
 
-  return languageNames?.of(language) ?? EMPTY_STRING;
+  return languageNames!.of(language) ?? EMPTY_STRING;
 }
 
 let _scriptNamesRef: WeakRef<Intl.DisplayNames> | null = null;
@@ -38,7 +38,7 @@ export function getScriptName(
 ): string {
   let scriptNames = _scriptNamesRef?.deref();
   const reuse = scriptNames &&
-    scriptNames.resolvedOptions().locale !==
+    scriptNames.resolvedOptions().locale ===
       (isString(nameLocale) ? nameLocale : nameLocale.baseName);
 
   if (reuse !== true) {
@@ -50,7 +50,7 @@ export function getScriptName(
     _scriptNamesRef = new WeakRef(scriptNames);
   }
 
-  return scriptNames?.of(script) ?? EMPTY_STRING;
+  return scriptNames!.of(script) ?? EMPTY_STRING;
 }
 
 let _regionNamesRef: WeakRef<Intl.DisplayNames> | null = null;
@@ -61,7 +61,7 @@ export function getRegionName(
 ): string {
   let regionNames = _regionNamesRef?.deref();
   const reuse = regionNames &&
-    regionNames.resolvedOptions().locale !==
+    regionNames.resolvedOptions().locale ===
       (isString(nameLocale) ? nameLocale : nameLocale.baseName);
 
   if (reuse !== true) {
@@ -73,5 +73,23 @@ export function getRegionName(
     _regionNamesRef = new WeakRef(regionNames);
   }
 
-  return regionNames?.of(region) ?? EMPTY_STRING;
+  return regionNames!.of(region) ?? EMPTY_STRING;
+}
+
+let _segmenterRef: WeakRef<Intl.Segmenter> | null = null;
+
+export function getGraphemeSegmenter(
+  locale: Intl.UnicodeBCP47LocaleIdentifier | Intl.Locale = _FALLBACK,
+): Intl.Segmenter {
+  let segmenter = _segmenterRef?.deref();
+  const reuse = segmenter &&
+    (segmenter.resolvedOptions().locale ===
+      (isString(locale) ? locale : locale.baseName));
+
+  if (reuse !== true) {
+    segmenter = new Intl.Segmenter(locale, { granularity: "grapheme" });
+    _segmenterRef = new WeakRef(segmenter);
+  }
+
+  return segmenter!;
 }
