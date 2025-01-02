@@ -1,22 +1,10 @@
 import scriptMap from "../dat/script_map.json" with { type: "json" };
-import { script } from "./_.ts";
 import { getScriptName } from "./utils.ts";
+import { script } from "./_.ts";
 
 type _script = keyof typeof scriptMap;
 
-export function is(test: unknown): test is script {
-  return Object.keys(scriptMap).includes(test as string);
-}
-
-export function assert(test: unknown, label: string): void {
-  if (is(test) !== true) {
-    throw new TypeError(
-      `\`${label}\` must be an ISO 15924 script alpha-4 code.`,
-    );
-  }
-}
-
-export type Properties = {
+export interface Script {
   /** ISO 15924 Alpha-4 code. */
   alpha4: string;
 
@@ -31,24 +19,44 @@ export type Properties = {
 
   /** Reserved for private use */
   private: boolean;
-};
+
+  //includes(rune: rune): rune is rune;
+}
 //XXX dir,type,...
 
-export function propertiesOf(
-  script: script,
-  nameLocale?: Intl.UnicodeBCP47LocaleIdentifier | Intl.Locale,
-): Properties | null {
-  if (is(script)) {
-    const info = scriptMap[script as _script];
+// function _includesRune(rune: rune, script: script): rune is rune {
+// }
 
-    return {
-      alpha4: script,
-      number: info[0] as number,
-      name: getScriptName(script, nameLocale),
-      pva: info[1] as string,
-      private: info[2] as boolean,
-    };
+export namespace Script {
+  export function is(test: unknown): test is script {
+    return Object.keys(scriptMap).includes(test as string);
   }
 
-  return null;
+  export function assert(test: unknown, label: string): void {
+    if (is(test) !== true) {
+      throw new TypeError(
+        `\`${label}\` must be an ISO 15924 script alpha-4 code.`,
+      );
+    }
+  }
+
+  export function of(
+    script: script,
+    nameLocale?: Intl.UnicodeBCP47LocaleIdentifier | Intl.Locale,
+  ): Script | null {
+    if (is(script)) {
+      const info = scriptMap[script as _script];
+
+      return {
+        alpha4: script,
+        number: info[0] as number,
+        name: getScriptName(script, nameLocale),
+        pva: info[1] as string,
+        private: info[2] as boolean,
+        //includes: (rune: rune): rune is rune => _includesRune(rune, script),
+      };
+    }
+
+    return null;
+  }
 }

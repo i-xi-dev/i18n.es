@@ -1,5 +1,5 @@
 /** `/^[a-z]{2,3}$/` */
-export type lang = string;
+export type language = string;
 
 /** `/^[A-Z][a-z]{3}$/` */
 export type script = string;
