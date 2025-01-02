@@ -41,7 +41,7 @@ Deno.test("Language.propertiesOf()", () => {
   assertStrictEquals(n?.alpha2, "nl");
   assertStrictEquals(n?.alpha3, "nld");
   assertStrictEquals(n?.alpha3b, "dut");
-  assertStrictEquals(n?.name, "Dutch, Flemish");
+  assertStrictEquals(n?.name, "Dutch");
   assertStrictEquals(n?.private, false);
 
   const q = Language.propertiesOf("qqz");

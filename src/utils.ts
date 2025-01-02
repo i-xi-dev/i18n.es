@@ -1,4 +1,4 @@
-import { region, script } from "./_.ts";
+import { lang, region, script } from "./_.ts";
 
 //TODO import
 function isString(test: unknown): test is string {
@@ -48,4 +48,26 @@ export function getRegionName(
   }
 
   return _regionNameDictionary?.of(region) ?? EMPTY_STRING;
+}
+
+let _languageNameDictionary: Intl.DisplayNames | null = null;
+
+export function getLanguageName(
+  language: lang,
+  nameLocale: Intl.UnicodeBCP47LocaleIdentifier | Intl.Locale = "en",
+): string {
+  const reuse = _languageNameDictionary &&
+    _languageNameDictionary.resolvedOptions().locale !==
+      (isString(nameLocale) ? nameLocale : nameLocale.baseName);
+
+  if (reuse !== true) {
+    _languageNameDictionary = new Intl.DisplayNames(nameLocale, {
+      fallback: "none",
+      //XXX languageDisplay,
+      //XXX style,
+      type: "language",
+    });
+  }
+
+  return _languageNameDictionary?.of(language) ?? EMPTY_STRING;
 }

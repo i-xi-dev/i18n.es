@@ -2,6 +2,7 @@ import languageMap from "../dat/language_map.json" with {
   type: "json",
 };
 import { lang } from "./_.ts";
+import { getLanguageName } from "./utils.ts";
 
 type _lang = keyof typeof languageMap;
 
@@ -54,7 +55,7 @@ export type Properties = {
   /** ISO 639 Set-2(B) Alpha-3 code. */
   alpha3b: string;
 
-  /** ISO 639 English name. */
+  /** Localized name. */
   name: string;
 
   /** Reserved for local use */
@@ -66,73 +67,75 @@ export type Properties = {
 };
 //XXX individuals,...
 
+function _scope(scopeCode: string): Scope {
+  switch (scopeCode) {
+    case "c":
+      return Scope.COLLECTIVE;
+
+    case "i":
+      return Scope.INDIVIDUAL;
+
+    case "p":
+      return Scope.LOCAL;
+
+    case "m":
+      return Scope.MACROLANGUAGE;
+
+    case "s":
+      return Scope.SPECIAL;
+
+    default:
+      throw new Error("`language_map.json` is broken.");
+  }
+}
+
+function _type(typeCode: string): Type {
+  switch (typeCode) {
+    case "c":
+      return Type.CONSTRUCTED;
+
+    case "x":
+      return Type.EXTINCT;
+
+    case "n":
+      return Type.GENETIC;
+
+    case "k":
+      return Type.GENETIC_LIKE;
+
+    case "r":
+      return Type.GEOGRAPHIC;
+
+    case "h":
+      return Type.HISTORICAL;
+
+    case "l":
+      return Type.LIVING;
+
+    case "s":
+      return Type.SPECIAL;
+
+    default:
+      return Type.UNASSIGNED;
+  }
+}
+
 export function propertiesOf(language: lang): Properties | null {
   if (is(language)) {
     const info = languageMap[language as _lang];
     const alpha3 = info[1] as string;
     const alpha3b = info[2] as string;
-    const scopeCode = info[4] as string;
-    const typeCode = info[5] as string;
-    let scope: Scope;
-    switch (scopeCode) {
-      case "c":
-        scope = Scope.COLLECTIVE;
-        break;
-      case "i":
-        scope = Scope.INDIVIDUAL;
-        break;
-      case "p":
-        scope = Scope.LOCAL;
-        break;
-      case "m":
-        scope = Scope.MACROLANGUAGE;
-        break;
-      case "s":
-        scope = Scope.SPECIAL;
-        break;
-      default:
-        throw new Error("`language_map.json` is broken.");
-    }
-
-    let type: Type;
-    switch (typeCode) {
-      case "c":
-        type = Type.CONSTRUCTED;
-        break;
-      case "x":
-        type = Type.EXTINCT;
-        break;
-      case "n":
-        type = Type.GENETIC;
-        break;
-      case "k":
-        type = Type.GENETIC_LIKE;
-        break;
-      case "r":
-        type = Type.GEOGRAPHIC;
-        break;
-      case "h":
-        type = Type.HISTORICAL;
-        break;
-      case "l":
-        type = Type.LIVING;
-        break;
-      case "s":
-        type = Type.SPECIAL;
-        break;
-      default:
-        type = Type.UNASSIGNED;
-        break;
-    }
+    const scopeCode = info[3] as string;
+    const typeCode = info[4] as string;
 
     return {
       alpha2: info[0] as string,
       alpha3,
       alpha3b: (alpha3b.length > 0) ? alpha3b : alpha3,
-      name: info[3] as string,
+      name: getLanguageName(language),
       private: (scopeCode === "p"),
-      scope,
-      type,
+      scope: _scope(scopeCode),
+      type: _type(typeCode),
     };
   }
 

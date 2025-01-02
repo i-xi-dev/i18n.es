@@ -26,7 +26,7 @@ export type Properties = {
   /** ISO 3166-1 Alpha-3 code. */
   alpha3: string;
 
-  /** Name. */
+  /** Localized name. */
   name: string;
 
   /** User-assigned code */

@@ -23,7 +23,7 @@ export type Properties = {
   /** ISO 15924 Numeric code. */
   number: number;
 
-  /** Name. */
+  /** Localized name. */
   name: string;
 
   /** UCD alias. */
