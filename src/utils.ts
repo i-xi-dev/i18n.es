@@ -1,4 +1,4 @@
-import { lang, region, script } from "./_.ts";
+import { language, region, script } from "./_.ts";
 
 //TODO import
 function isString(test: unknown): test is string {
@@ -53,7 +53,7 @@ export function getRegionName(
 let _languageNameDictionary: Intl.DisplayNames | null = null;
 
 export function getLanguageName(
-  language: lang,
+  language: language,
   nameLocale: Intl.UnicodeBCP47LocaleIdentifier | Intl.Locale = "en",
 ): string {
   const reuse = _languageNameDictionary &&

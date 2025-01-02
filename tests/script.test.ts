@@ -28,25 +28,25 @@ Deno.test("Script.assert()", () => {
   }
 });
 
-Deno.test("Script.propertiesOf()", () => {
-  const l = Script.propertiesOf("Latn");
+Deno.test("Script.of()", () => {
+  const l = Script.of("Latn");
   assertStrictEquals(l?.alpha4, "Latn");
   assertStrictEquals(l?.number, 215);
   assertStrictEquals(l?.name, "Latin");
   assertStrictEquals(l?.pva, "Latin");
   assertStrictEquals(l?.private, false);
 
-  // const l2 = Script.propertiesOf("Latn", "ja");
+  // const l2 = Script.of("Latn", "ja");
   // assertStrictEquals(l2?.name, "ラテン文字"); 環境依存
 
-  const s = Script.propertiesOf("Zsym");
+  const s = Script.of("Zsym");
   assertStrictEquals(s?.alpha4, "Zsym");
   assertStrictEquals(s?.number, 996);
   assertStrictEquals(s?.name, "Symbols");
   assertStrictEquals(s?.pva, "");
   assertStrictEquals(s?.private, false);
 
-  const q = Script.propertiesOf("Qabc");
+  const q = Script.of("Qabc");
   assertStrictEquals(q?.alpha4, "Qabc");
   assertStrictEquals(q?.number, 928);
   assertStrictEquals(q?.name, "");

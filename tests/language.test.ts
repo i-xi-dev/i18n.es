@@ -27,8 +27,8 @@ Deno.test("Language.assert()", () => {
   }
 });
 
-Deno.test("Language.propertiesOf()", () => {
-  const e = Language.propertiesOf("en");
+Deno.test("Language.of()", () => {
+  const e = Language.of("en");
   assertStrictEquals(e?.alpha2, "en");
   assertStrictEquals(e?.alpha3, "eng");
   assertStrictEquals(e?.alpha3b, "eng");
@@ -37,14 +37,14 @@ Deno.test("Language.propertiesOf()", () => {
   assertStrictEquals(e?.scope, "individual");
   assertStrictEquals(e?.type, "living");
 
-  const n = Language.propertiesOf("nl");
+  const n = Language.of("nl");
   assertStrictEquals(n?.alpha2, "nl");
   assertStrictEquals(n?.alpha3, "nld");
   assertStrictEquals(n?.alpha3b, "dut");
   assertStrictEquals(n?.name, "Dutch");
   assertStrictEquals(n?.private, false);
 
-  const q = Language.propertiesOf("qqz");
+  const q = Language.of("qqz");
   assertStrictEquals(q?.alpha2, "");
   assertStrictEquals(q?.alpha3, "qqz");
   assertStrictEquals(q?.alpha3b, "qqz");
