@@ -5,67 +5,73 @@ const { EMPTY: EMPTY_STRING, is: isString } = Basics.StringType;
 
 const _FALLBACK = "en";
 
-let _languageNameDictionary: Intl.DisplayNames | null = null;
+let _languageNamesRef: WeakRef<Intl.DisplayNames> | null = null;
 
 // `nameLocale`省略時は`language`で良いのでは → getScriptName,getRegionNameと整合性が取れないのでやめる
 export function getLanguageName(
   language: language,
   nameLocale: Intl.UnicodeBCP47LocaleIdentifier | Intl.Locale = _FALLBACK,
 ): string {
-  const reuse = _languageNameDictionary &&
-    _languageNameDictionary.resolvedOptions().locale !==
+  let languageNames = _languageNamesRef?.deref();
+  const reuse = languageNames &&
+    languageNames.resolvedOptions().locale !==
       (isString(nameLocale) ? nameLocale : nameLocale.baseName);
 
   if (reuse !== true) {
-    _languageNameDictionary = new Intl.DisplayNames(nameLocale, {
+    languageNames = new Intl.DisplayNames(nameLocale, {
       fallback: "none",
       //XXX languageDisplay,
       //XXX style,
       type: "language",
     });
+    _languageNamesRef = new WeakRef(languageNames);
   }
 
-  return _languageNameDictionary?.of(language) ?? EMPTY_STRING;
+  return languageNames?.of(language) ?? EMPTY_STRING;
 }
 
-let _scriptNameDictionary: Intl.DisplayNames | null = null;
+let _scriptNamesRef: WeakRef<Intl.DisplayNames> | null = null;
 
 export function getScriptName(
   script: script,
   nameLocale: Intl.UnicodeBCP47LocaleIdentifier | Intl.Locale = _FALLBACK,
 ): string {
-  const reuse = _scriptNameDictionary &&
-    _scriptNameDictionary.resolvedOptions().locale !==
+  let scriptNames = _scriptNamesRef?.deref();
+  const reuse = scriptNames &&
+    scriptNames.resolvedOptions().locale !==
       (isString(nameLocale) ? nameLocale : nameLocale.baseName);
 
   if (reuse !== true) {
-    _scriptNameDictionary = new Intl.DisplayNames(nameLocale, {
+    scriptNames = new Intl.DisplayNames(nameLocale, {
       fallback: "none",
       //XXX style,
       type: "script",
     });
+    _scriptNamesRef = new WeakRef(scriptNames);
   }
 
-  return _scriptNameDictionary?.of(script) ?? EMPTY_STRING;
+  return scriptNames?.of(script) ?? EMPTY_STRING;
 }
 
-let _regionNameDictionary: Intl.DisplayNames | null = null;
+let _regionNamesRef: WeakRef<Intl.DisplayNames> | null = null;
 
 export function getRegionName(
   region: region,
   nameLocale: Intl.UnicodeBCP47LocaleIdentifier | Intl.Locale = _FALLBACK,
 ): string {
-  const reuse = _regionNameDictionary &&
-    _regionNameDictionary.resolvedOptions().locale !==
+  let regionNames = _regionNamesRef?.deref();
+  const reuse = regionNames &&
+    regionNames.resolvedOptions().locale !==
       (isString(nameLocale) ? nameLocale : nameLocale.baseName);
 
   if (reuse !== true) {
-    _regionNameDictionary = new Intl.DisplayNames(nameLocale, {
+    regionNames = new Intl.DisplayNames(nameLocale, {
       fallback: "none",
       //XXX style,
       type: "region",
     });
+    _regionNamesRef = new WeakRef(regionNames);
   }
 
-  return _regionNameDictionary?.of(region) ?? EMPTY_STRING;
+  return regionNames?.of(region) ?? EMPTY_STRING;
 }
