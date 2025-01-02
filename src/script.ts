@@ -1,6 +1,9 @@
 import scriptMap from "../dat/script_map.json" with { type: "json" };
 import { getScriptName } from "./utils.ts";
-import { script } from "./_.ts";
+import { rune, script } from "./_.ts";
+import { Text } from "@i-xi-dev/types";
+
+const { is: isRune } = Text.Rune;
 
 type _script = keyof typeof scriptMap;
 
@@ -20,12 +23,32 @@ export interface Script {
   /** Reserved for private use */
   private: boolean;
 
-  //includes(rune: rune): rune is rune;
+  includes(rune: rune): boolean;
 }
 //XXX dir,type,...
 
-// function _includesRune(rune: rune, script: script): rune is rune {
-// }
+function _includesRune(
+  rune: rune,
+  script: script,
+  options?: Script.IncludesOptions,
+): boolean {
+  if (isRune(rune) !== true) {
+    return false;
+  }
+
+  const or = [];
+  or.push(`\\p{sc=${script}}`);
+  if (options?.excludeScx !== true) {
+    or.push(`\\p{scx=${script}}`);
+  }
+  const pattern = or.join("|");
+
+  try {
+    return (new RegExp(`^(?:${pattern})$`, "v")).test(rune);
+  } catch {
+    throw new RangeError(`${script} is not supported in Unicode property.`);
+  }
+}
 
 export namespace Script {
   export function is(test: unknown): test is script {
@@ -40,6 +63,10 @@ export namespace Script {
     }
   }
 
+  export type IncludesOptions = {
+    excludeScx?: boolean;
+  };
+
   export function of(
     script: script,
     nameLocale?: Intl.UnicodeBCP47LocaleIdentifier | Intl.Locale,
@@ -53,7 +80,8 @@ export namespace Script {
         name: getScriptName(script, nameLocale),
         pva: info[1] as string,
         private: info[2] as boolean,
-        //includes: (rune: rune): rune is rune => _includesRune(rune, script),
+        includes: (rune: rune, options?: IncludesOptions): boolean =>
+          _includesRune(rune, script, options),
       };
     }
 

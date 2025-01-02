@@ -1,12 +1,7 @@
 import { language, region, script } from "./_.ts";
+import { Basics } from "@i-xi-dev/types";
 
-//TODO import
-function isString(test: unknown): test is string {
-  return (typeof test === "string");
-}
-
-//TODO import
-const EMPTY_STRING = "";
+const { EMPTY: EMPTY_STRING, is: isString } = Basics.StringType;
 
 let _scriptNameDictionary: Intl.DisplayNames | null = null;
 

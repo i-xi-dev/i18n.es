@@ -6,3 +6,5 @@ export type script = string;
 
 /** `/^[A-Z]{2}$/` */
 export type region = string;
+
+export type rune = string;
