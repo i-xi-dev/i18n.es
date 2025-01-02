@@ -23,7 +23,7 @@ export interface Script {
   /** Reserved for private use */
   private: boolean;
 
-  includes(rune: rune): boolean;
+  includes(rune: rune, options?: Script.IncludesOptions): boolean;
 }
 //XXX dir,type,...
 
@@ -46,7 +46,7 @@ function _includesRune(
   try {
     return (new RegExp(`^(?:${pattern})$`, "v")).test(rune);
   } catch {
-    throw new RangeError(`${script} is not supported in Unicode property.`);
+    throw new RangeError(`\`${script}\` is not supported in Unicode property.`);
   }
 }
 

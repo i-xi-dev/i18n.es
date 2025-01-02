@@ -1,4 +1,9 @@
-import { assertStrictEquals, fail, unreachable } from "@std/assert";
+import {
+  assertStrictEquals,
+  assertThrows,
+  fail,
+  unreachable,
+} from "@std/assert";
 import { Script } from "../mod.ts";
 
 Deno.test("Script.is()", () => {
@@ -52,4 +57,49 @@ Deno.test("Script.of()", () => {
   assertStrictEquals(q?.name, "");
   assertStrictEquals(q?.pva, "");
   assertStrictEquals(q?.private, true);
+});
+
+Deno.test("Script/includes()", () => {
+  const k = Script.of("Kana");
+  const h = Script.of("Hira");
+  const l = Script.of("Latn");
+  //const lc = Script.of(["Latn", "Zyyy"]);
+  const lc = Script.of("Zyyy");
+
+  const opEx = { excludeScx: true } as const;
+
+  assertStrictEquals(k?.includes("ア"), true);
+  assertStrictEquals(h?.includes("ア"), false);
+  assertStrictEquals(k?.includes("ア", opEx), true);
+  assertStrictEquals(h?.includes("ア", opEx), false);
+
+  assertStrictEquals(k?.includes("あ"), false);
+  assertStrictEquals(h?.includes("あ"), true);
+  assertStrictEquals(k?.includes("あ", opEx), false);
+  assertStrictEquals(h?.includes("あ", opEx), true);
+
+  assertStrictEquals(k?.includes("ー"), true);
+  assertStrictEquals(h?.includes("ー"), true);
+  assertStrictEquals(k?.includes("ー", opEx), false);
+  assertStrictEquals(h?.includes("ー", opEx), false);
+
+  assertStrictEquals(l?.includes(""), false);
+  assertStrictEquals(l?.includes("a"), true);
+  assertStrictEquals(l?.includes("aa"), false);
+  assertStrictEquals(l?.includes("1"), false);
+
+  assertStrictEquals(lc?.includes(""), false);
+  assertStrictEquals(lc?.includes("a"), false);
+  assertStrictEquals(lc?.includes("aa"), false);
+  assertStrictEquals(lc?.includes("1"), true);
+
+  assertStrictEquals(l?.includes(null as unknown as "0"), false);
+
+  assertThrows(
+    () => {
+      Script.of("Zsym")?.includes("a");
+    },
+    RangeError,
+    "`Zsym` is not supported in Unicode property.",
+  );
 });
