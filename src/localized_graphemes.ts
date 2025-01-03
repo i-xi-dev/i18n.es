@@ -11,10 +11,14 @@ export interface LocalizedGraphemes {
   //TODO isBelongToScripts(),
 }
 
+const _NormalizationForms = ["NFC", "NFD", "NFKC", "NFKD"] as const;
+
+type _NormalizationForm = typeof _NormalizationForms[number];
+
 export namespace LocalizedGraphemes {
   export type FromOptions = {
     locale?: string | Intl.Locale;
-    //TODO normalize
+    normalization?: _NormalizationForm;
     //TODO fallbackIfNotWellformed
   };
 
@@ -25,9 +29,16 @@ export namespace LocalizedGraphemes {
     options?: FromOptions,
   ): LocalizedGraphemes {
     assertString(value, "value");
+    let target = value;
+
+    if (
+      _NormalizationForms.includes(options?.normalization as _NormalizationForm)
+    ) {
+      target = target.normalize(options?.normalization);
+    }
 
     const { resolvedLocale, segments } = segmentGraphemes(
-      value,
+      target,
       options?.locale,
     );
     const locale = new Intl.Locale(resolvedLocale);
@@ -40,7 +51,7 @@ export namespace LocalizedGraphemes {
     return Object.freeze({
       locale,
       graphemes,
-      value,
+      value: target,
     });
   }
 }

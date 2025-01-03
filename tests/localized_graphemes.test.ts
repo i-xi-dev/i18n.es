@@ -114,8 +114,9 @@ Deno.test("LocalizedGraphemes.fromString()", () => {
     `["\u{29E3D}","\u304b\u3099","\u585A\u{E0101}"]`,
   );
 
-  const g27b = LocalizedGraphemes.fromString("𩸽が塚󠄁".normalize("NFC"), {
+  const g27b = LocalizedGraphemes.fromString("𩸽が塚󠄁", {
     locale: "en",
+    normalization: "NFC",
   });
   assertStrictEquals(
     _iToS(g27b.graphemes),
