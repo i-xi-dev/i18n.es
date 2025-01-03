@@ -5,7 +5,7 @@ import { segmentGraphemes } from "./utils.ts";
 const { assert: assertString } = Basics.StringType;
 const { assert: assertRuneSequence } = Text.RuneSequence;
 
-export interface LocalizedGraphemes {
+export interface GraphemeSequence {
   locale: Intl.Locale;
   graphemes: grapheme[];
   value: string;
@@ -16,7 +16,7 @@ const _NormalizationForms = ["NFC", "NFD", "NFKC", "NFKD"] as const;
 
 type _NormalizationForm = typeof _NormalizationForms[number];
 
-export namespace LocalizedGraphemes {
+export namespace GraphemeSequence {
   export type FromOptions = {
     allowMalformed?: boolean;
     locale?: string | Intl.Locale;
@@ -28,7 +28,7 @@ export namespace LocalizedGraphemes {
   export function fromString(
     value: string,
     options?: FromOptions,
-  ): LocalizedGraphemes {
+  ): GraphemeSequence {
     if (options?.allowMalformed === true) {
       assertString(value, "value");
     } else {

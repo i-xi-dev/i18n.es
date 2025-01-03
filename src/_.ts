@@ -12,4 +12,4 @@ export type rune = string;
 export type usvstring = string;
 
 /** A grapheme cluster. */
-export type grapheme = string;
+export type grapheme = usvstring;
