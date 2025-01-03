@@ -21,20 +21,34 @@ Deno.test("LocalizedGraphemes.fromString()", () => {
   const e1 = "`value` must be a `string`.";
   assertThrows(
     () => {
-      LocalizedGraphemes.fromString(null as unknown as string);
+      LocalizedGraphemes.fromString(null as unknown as string, {
+        allowMalformed: true,
+      });
     },
     TypeError,
     e1,
   );
 
-  //
-  // assertThrows(
-  //   () => {
-  //     [...RuneSequence.toGraphemes("\u{dc0b}\u{d840}")];
-  //   },
-  //   TypeError,
-  //   e1,
-  // );
+  const gx1 = LocalizedGraphemes.fromString("\u{dc0b}\u{d840}", {
+    allowMalformed: true,
+  });
+  assertStrictEquals(_iToS(gx1.graphemes), `["\\udc0b","\\ud840"]`);
+
+  const e2 = "`value` must be a `USVString`.";
+  assertThrows(
+    () => {
+      LocalizedGraphemes.fromString(null as unknown as string);
+    },
+    TypeError,
+    e2,
+  );
+  assertThrows(
+    () => {
+      LocalizedGraphemes.fromString("\u{dc0b}\u{d840}");
+    },
+    TypeError,
+    e2,
+  );
 
   const g5 = LocalizedGraphemes.fromString("0", { locale: "en" });
   assertStrictEquals(_iToS(g5.graphemes), `["0"]`);

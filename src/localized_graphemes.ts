@@ -1,8 +1,9 @@
+import { Basics, Text } from "@i-xi-dev/type";
 import { grapheme } from "./_.ts";
 import { segmentGraphemes } from "./utils.ts";
-import { Basics } from "@i-xi-dev/type";
 
 const { assert: assertString } = Basics.StringType;
+const { assert: assertRuneSequence } = Text.RuneSequence;
 
 export interface LocalizedGraphemes {
   locale: Intl.Locale;
@@ -17,9 +18,9 @@ type _NormalizationForm = typeof _NormalizationForms[number];
 
 export namespace LocalizedGraphemes {
   export type FromOptions = {
+    allowMalformed?: boolean;
     locale?: string | Intl.Locale;
     normalization?: _NormalizationForm;
-    //TODO fallbackIfNotWellformed
   };
 
   // 分割はIntl.Segmenterに依存する
@@ -28,17 +29,21 @@ export namespace LocalizedGraphemes {
     value: string,
     options?: FromOptions,
   ): LocalizedGraphemes {
-    assertString(value, "value");
-    let target = value;
+    if (options?.allowMalformed === true) {
+      assertString(value, "value");
+    } else {
+      assertRuneSequence(value, "value");
+    }
 
+    let normalized = value;
     if (
       _NormalizationForms.includes(options?.normalization as _NormalizationForm)
     ) {
-      target = target.normalize(options?.normalization);
+      normalized = normalized.normalize(options?.normalization);
     }
 
     const { resolvedLocale, segments } = segmentGraphemes(
-      target,
+      normalized,
       options?.locale,
     );
     const locale = new Intl.Locale(resolvedLocale);
@@ -51,7 +56,7 @@ export namespace LocalizedGraphemes {
     return Object.freeze({
       locale,
       graphemes,
-      value: target,
+      value: normalized,
     });
   }
 }
