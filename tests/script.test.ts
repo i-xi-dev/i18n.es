@@ -104,7 +104,7 @@ Deno.test("Script/includes()", () => {
   );
 });
 
-Deno.test("Script.includesAll()", () => {
+Deno.test("Script/includesAll()", () => {
   const k = Script.of("Kana");
   const h = Script.of("Hira");
   const l = Script.of("Latn");

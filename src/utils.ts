@@ -78,9 +78,10 @@ export function getRegionName(
 
 let _segmenterRef: WeakRef<Intl.Segmenter> | null = null;
 
-export function getGraphemeSegmenter(
+export function segmentGraphemes(
+  value: string,
   locale: Intl.UnicodeBCP47LocaleIdentifier | Intl.Locale = _FALLBACK,
-): Intl.Segmenter {
+): { resolvedLocale: string; segments: Intl.Segments } {
   let segmenter = _segmenterRef?.deref();
   const reuse = segmenter &&
     (segmenter.resolvedOptions().locale ===
@@ -91,5 +92,8 @@ export function getGraphemeSegmenter(
     _segmenterRef = new WeakRef(segmenter);
   }
 
-  return segmenter!;
+  return {
+    resolvedLocale: segmenter!.resolvedOptions().locale,
+    segments: segmenter!.segment(value),
+  };
 }

@@ -10,3 +10,6 @@ export type region = string;
 export type rune = string;
 
 export type usvstring = string;
+
+/** A grapheme cluster. */
+export type grapheme = string;
